@@ -7,31 +7,32 @@ using System.Threading.Tasks;
 
 namespace chess.Mark1Engine
 {
-    public class Shape2D
+    public class PossibleMove
     {
-
         public Vector2 Position = null;
         public Vector2 Scale = null;
-        public string tag = "";
         public Color color;
-        public Sprite PieceOnTop { get; set; }
 
-        public Shape2D(Vector2 position, Vector2 scale, Color color, string tag)
+       /* public PossibleMove()
         {
+            color = Color.Transparent;
+        }*/
+
+        public PossibleMove(Vector2 position, Color color)
+        {
+            this.Scale = new Vector2(64, 64);
             this.Position = position;
-            this.Scale = scale;
-            this.tag = tag;
             this.color = color;
-            
 
-            Engine.RegisterShape(this);
+            Engine.RegisterPossibleMoves(this);
         }
-
         public void DestroySelf()
         {
-            Engine.UnRegisterShape(this);
+            Engine.UnRegisterPossibleMoves(this);
         }
-
-
+        public static void DestroyALL()
+        {
+            Engine.UnRegisterAllPossibleMoves();
+        }
     }
 }
