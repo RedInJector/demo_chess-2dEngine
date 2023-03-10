@@ -50,8 +50,8 @@
     </Compile>
     <Compile Include="DemoGame.cs" />
     <Compile Include="Mark1Engine\PieceMover.cs" />
-    <Compile Include="Mark1Engine\Shape2D.cs" />
-    <Compile Include="Mark1Engine\Sprite.cs" />
+    <Compile Include="Mark1Engine\Tile.cs" />
+    <Compile Include="Mark1Engine\Piece.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mark1Engine\Vector2.cs" />

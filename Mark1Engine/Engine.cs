@@ -26,8 +26,8 @@ namespace chess.Mark1Engine
         private Canvas Window = null;
         private Thread GameLoopThread = null;
 
-        private static List<Shape2D> AllShapes = new List<Shape2D>();
-        private static List<Sprite> AllSprites = new List<Sprite>();
+        private static List<Tile> AllShapes = new List<Tile>();
+        private static List<Piece> AllSprites = new List<Piece>();
 
 
         public Engine(Vector2 screenSize, string Title)
@@ -58,20 +58,20 @@ namespace chess.Mark1Engine
             Mouse(e);
         }
 
-        public static void RegisterShape(Shape2D shape)
+        public static void RegisterShape(Tile shape)
         {
             AllShapes.Add(shape);
         }
-        public static void UnRegisterShape(Shape2D shape)
+        public static void UnRegisterShape(Tile shape)
         {
             AllShapes.Remove(shape);
         }
 
-        public static void RegisterSprite(Sprite sprite)
+        public static void RegisterSprite(Piece sprite)
         {
             AllSprites.Add(sprite);
         }
-        public static void UnRegisterSprite(Sprite sprite)
+        public static void UnRegisterSprite(Piece sprite)
         {
             AllSprites.Remove(sprite);
         }
@@ -101,11 +101,11 @@ namespace chess.Mark1Engine
             Graphics g = e.Graphics;
             g.Clear(Color.Black);
 
-            foreach(Shape2D shape in AllShapes)
+            foreach(Tile shape in AllShapes)
             {
                 g.FillRectangle(new SolidBrush(shape.color), shape.Position.x, shape.Position.y, shape.Scale.x, shape.Scale.y);
             }
-            foreach(Sprite sprite in AllSprites)
+            foreach(Piece sprite in AllSprites)
             {
                 g.DrawImage(sprite.image, sprite.Position.x, sprite.Position.y);
             }

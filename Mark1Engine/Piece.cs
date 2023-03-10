@@ -8,16 +8,33 @@ using System.Threading.Tasks;
 
 namespace chess.Mark1Engine
 {
-    public class Sprite
+    public class Piece
     {
         public Vector2 Position = null;
         public Vector2 Scale = null;
         public string tag = "";
         public static Image SpriteSheetimage = Image.FromFile("Sprites/Pack1.png");
         public Image image;
+        public int side;
         Bitmap bitmap = new Bitmap(SpriteSheetimage);
 
-        public Sprite(Vector2 position, Vector2 scale, string tag, char c)
+
+        Rectangle WK = new Rectangle(0, 0, 128, 128);
+        Rectangle WQ = new Rectangle(128, 0, 128, 128);
+        Rectangle WB = new Rectangle(256, 0, 128, 128);
+        Rectangle WN = new Rectangle(384, 0, 128, 128);
+        Rectangle WR = new Rectangle(512, 0, 128, 128);
+        Rectangle WP = new Rectangle(640, 0, 128, 128);
+
+        Rectangle BK = new Rectangle(0, 128, 128, 128);
+        Rectangle BQ = new Rectangle(128, 128, 128, 128);
+        Rectangle BB = new Rectangle(256, 128, 128, 128);
+        Rectangle BN = new Rectangle(384, 128, 128, 128);
+        Rectangle BR = new Rectangle(512, 128, 128, 128);
+        Rectangle BP = new Rectangle(640, 128, 128, 128);
+
+        public Piece() { }
+        public Piece(Vector2 position, Vector2 scale, string tag, char c)
         {
             this.Position = position;
             this.Scale = scale;
@@ -25,30 +42,18 @@ namespace chess.Mark1Engine
             
             image = new Bitmap((int)scale.x, (int)scale.y);
 
-            Rectangle WK = new Rectangle(0, 0, 128, 128);
-            Rectangle WQ = new Rectangle(128, 0, 128, 128);
-            Rectangle WB = new Rectangle(256, 0, 128, 128);
-            Rectangle WN = new Rectangle(384, 0, 128, 128);
-            Rectangle WR = new Rectangle(512, 0, 128, 128);
-            Rectangle WP = new Rectangle(640, 0, 128, 128);
-
-            Rectangle BK = new Rectangle(0, 128, 128, 128);
-            Rectangle BQ = new Rectangle(128, 128, 128, 128);
-            Rectangle BB = new Rectangle(256, 128, 128, 128);
-            Rectangle BN = new Rectangle(384, 128, 128, 128);
-            Rectangle BR = new Rectangle(512, 128, 128, 128);
-            Rectangle BP = new Rectangle(640, 128, 128, 128);
+            
 
             Rectangle spriteBounds = WP;
 
             switch (c)
             {
-                case 'P': spriteBounds = WP; break;
-                case 'N': spriteBounds = WN; break;
-                case 'B': spriteBounds = WB; break;
-                case 'Q': spriteBounds = WQ; break;
-                case 'K': spriteBounds = WK; break;
-                case 'R': spriteBounds = WR; break;
+                case 'P': spriteBounds = WP; side = 1; break;
+                case 'N': spriteBounds = WN; side = 1; break;
+                case 'B': spriteBounds = WB; side = 1; break;
+                case 'Q': spriteBounds = WQ; side = 1; break;
+                case 'K': spriteBounds = WK; side = 1; break;
+                case 'R': spriteBounds = WR; side = 1; break;
                 case 'p': spriteBounds = BP; break;
                 case 'n': spriteBounds = BN; break;
                 case 'b': spriteBounds = BB; break;
