@@ -16,6 +16,7 @@ namespace chess.Mark1Engine
         public static Image SpriteSheetimage = Image.FromFile("Sprites/Pack1.png");
         public Image image;
         public int side = 0;
+        public bool firstmove = true;
         Bitmap bitmap = new Bitmap(SpriteSheetimage);
 
 

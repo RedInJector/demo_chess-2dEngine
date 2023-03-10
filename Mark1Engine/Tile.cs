@@ -66,6 +66,13 @@ namespace chess.Mark1Engine
             return false;
         }
 
+        public char PieceTag()
+        {
+            if (PieceOnTop != null)
+                return PieceOnTop.tag;
+            return '0';
+        }
+
         public void restoreColor()
         {
             this.color = this.originalColor;

@@ -107,6 +107,12 @@ namespace chess
             MousePressedTile = new Vector2((mousePressX - mousePressX % 64) / 64,
         (mousePressY - mousePressY % 64) / 64);
 
+            if(Map[(int)MousePressedTile.x, (int)MousePressedTile.y].hasPiece())
+            {
+                new LegalMove(Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceOnTop,
+                    Map, Move);
+            }
+
             Console.WriteLine();
             Console.WriteLine("Click: " + MousePressedTile.ToString());
         }
@@ -131,6 +137,7 @@ namespace chess
                 {
                     Map[(int)MousePressedTile.x, (int)MousePressedTile.y].setPiece(
                         Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].PieceOnTop);
+                    Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceOnTop.firstmove = false;
 
                     Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].removePiece();
                     Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].restoreColor();
@@ -151,6 +158,8 @@ namespace chess
                         Map[(int)MousePressedTile.x, (int)MousePressedTile.y].setPiece(
                             Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].PieceOnTop);
 
+                        Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceOnTop.firstmove = false;
+
                         Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].removePiece();
                         Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].restoreColor();
 
@@ -167,13 +176,15 @@ namespace chess
                 //previousSelectedTile = null;
             }
             
-            else if(!MouseReleasedTile.Equals(MousePressedTile))
+            if(!MouseReleasedTile.Equals(MousePressedTile))
             {
                 previousSelectedTile = null;
                 if (!Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].hasPiece())
                 {
                     Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].setPiece(
                             Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceOnTop);
+
+                    Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].PieceOnTop.firstmove = false;
 
                     Map[(int)MousePressedTile.x, (int)MousePressedTile.y].removePiece();
                 }
@@ -182,25 +193,24 @@ namespace chess
                     if (Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].PieceSide() !=
                         Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceSide())
                     {
+
                         Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].eatPiece();
                         Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].setPiece(
                             Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceOnTop);
 
-                        Map[(int)MousePressedTile.x, (int)MousePressedTile.y].removePiece();
-                        //Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].restoreColor();
+                        Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].PieceOnTop.firstmove = false;
 
-                        //previousSelectedTile = null;
+                        Map[(int)MousePressedTile.x, (int)MousePressedTile.y].removePiece();
+
                     }
                     else
                     {
 
-                        //Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].restoreColor();
-                        //previousSelectedTile = MousePressedTile;
-                        //Map[(int)MousePressedTile.x, (int)MousePressedTile.y].color = RED;
                     }
+                    
 
                 }
-
+                ClearPossibleMoves();
                 Map[(int)MousePressedTile.x, (int)MousePressedTile.y].restoreColor();
             }
 
@@ -214,8 +224,8 @@ namespace chess
                 Console.WriteLine(previousSelectedTile.ToString());
             }
 
-
-            ClearPossibleMoves();
+            if(wasCklicked)
+                ClearPossibleMoves();
             drawBoard();
         }
 
