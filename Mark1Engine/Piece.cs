@@ -12,10 +12,10 @@ namespace chess.Mark1Engine
     {
         public Vector2 Position = null;
         public Vector2 Scale = null;
-        public string tag = "";
+        public char tag;
         public static Image SpriteSheetimage = Image.FromFile("Sprites/Pack1.png");
         public Image image;
-        public int side;
+        public int side = 0;
         Bitmap bitmap = new Bitmap(SpriteSheetimage);
 
 
@@ -34,11 +34,11 @@ namespace chess.Mark1Engine
         Rectangle BP = new Rectangle(640, 128, 128, 128);
 
         public Piece() { }
-        public Piece(Vector2 position, Vector2 scale, string tag, char c)
+        public Piece(Vector2 position, Vector2 scale, char c)
         {
             this.Position = position;
             this.Scale = scale;
-            this.tag = tag;
+            this.tag = c;
             
             image = new Bitmap((int)scale.x, (int)scale.y);
 
@@ -46,8 +46,10 @@ namespace chess.Mark1Engine
 
             Rectangle spriteBounds = WP;
 
+            tag = c;
             switch (c)
             {
+
                 case 'P': spriteBounds = WP; side = 1; break;
                 case 'N': spriteBounds = WN; side = 1; break;
                 case 'B': spriteBounds = WB; side = 1; break;

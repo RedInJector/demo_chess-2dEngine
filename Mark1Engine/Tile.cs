@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,8 @@ namespace chess.Mark1Engine
         public Vector2 Position = null;
         public Vector2 Scale = null;
         public string tag = "";
-        public Color color;
-        public Color originalColor;
+        public  Color color;
+        private Color originalColor;
         public Piece PieceOnTop { get; set; }
 
         public Tile(Vector2 position, Vector2 scale, Color color, string tag)
@@ -35,6 +36,40 @@ namespace chess.Mark1Engine
             Engine.UnRegisterShape(this);
         }
 
+        public void setPiece(Piece piece)
+        {
+            this.PieceOnTop = piece;
+            this.PieceOnTop.Position = this.Position;
+        }
+
+        public void removePiece()
+        {
+            this.PieceOnTop = null;
+        }
+        public void eatPiece()
+        {
+            this.PieceOnTop.DestroySelf();
+            this.PieceOnTop = null;
+        }
+
+        public int PieceSide()
+        {
+            if(!hasPiece())
+                return -1;
+            return this.PieceOnTop.side;
+        }
+
+        public bool hasPiece()
+        {
+            if (this.PieceOnTop != null)
+                return true;
+            return false;
+        }
+
+        public void restoreColor()
+        {
+            this.color = this.originalColor;
+        }
 
     }
 }

@@ -28,6 +28,7 @@ namespace chess.Mark1Engine
 
         private static List<Tile> AllShapes = new List<Tile>();
         private static List<Piece> AllSprites = new List<Piece>();
+        private static List<PossibleMove> PossibleMoves = new List<PossibleMove>();
 
 
         public Engine(Vector2 screenSize, string Title)
@@ -39,7 +40,8 @@ namespace chess.Mark1Engine
             Window.Size = new Size((int)this.screenSize.x, (int)this.screenSize.y);
             Window.Text = this.Title;
             Window.Paint += Renderer;
-            Window.MouseClick += MouseEvents;
+            Window.MouseDown += MouseD;
+            Window.MouseUp += MouseU;
 
             OnLoad();
 
@@ -51,11 +53,16 @@ namespace chess.Mark1Engine
         public abstract void OnLoad();
         public abstract void OnUpdate();
         public abstract void OnDraw();
-        public abstract void Mouse(MouseEventArgs e);
-        public void MouseEvents(object sender, MouseEventArgs e)
+        public abstract void MouseDown(MouseEventArgs e);
+        public abstract void MouseUp(MouseEventArgs e);
+        public void MouseD(object sender, MouseEventArgs e)
         {
             //Console.WriteLine(e.X + "     " + e.Y);
-            Mouse(e);
+            MouseDown(e);
+        }
+        public void MouseU(object sender, MouseEventArgs e)
+        {
+            MouseUp(e);
         }
 
         public static void RegisterShape(Tile shape)
@@ -65,6 +72,19 @@ namespace chess.Mark1Engine
         public static void UnRegisterShape(Tile shape)
         {
             AllShapes.Remove(shape);
+        }
+        public static void UnRegisterAllPossibleMoves()
+        {
+            PossibleMoves.Clear();
+        }
+
+        public static void RegisterPossibleMoves(PossibleMove moves)
+        {
+            PossibleMoves.Add(moves);
+        }
+        public static void UnRegisterPossibleMoves(PossibleMove moves)
+        {
+            PossibleMoves.Remove(moves);
         }
 
         public static void RegisterSprite(Piece sprite)
@@ -89,7 +109,7 @@ namespace chess.Mark1Engine
                     OnDraw();
                     Window.BeginInvoke((MethodInvoker)delegate { Window.Refresh(); });
                     OnUpdate();
-                    Thread.Sleep(5);
+                    Thread.Sleep(1);
                 }catch {
                     Console.WriteLine("Loading...");
                 }
@@ -105,6 +125,11 @@ namespace chess.Mark1Engine
             {
                 g.FillRectangle(new SolidBrush(shape.color), shape.Position.x, shape.Position.y, shape.Scale.x, shape.Scale.y);
             }
+            if(PossibleMoves.Count != 0)
+                foreach(PossibleMove move in PossibleMoves)
+                {
+                    g.FillRectangle(new SolidBrush(move.color), move.Position.x, move.Position.y, move.Scale.x, move.Scale.y);
+                }
             foreach(Piece sprite in AllSprites)
             {
                 g.DrawImage(sprite.image, sprite.Position.x, sprite.Position.y);
