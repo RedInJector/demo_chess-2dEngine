@@ -37,7 +37,7 @@ namespace chess.Mark1Engine
             }
         }
 
-        public static void HorizontalVertical(Piece piece, Tile[,] Map, PossibleMove[,] moves)
+        private static void HorizontalVertical(Piece piece, Tile[,] Map, PossibleMove[,] moves)
         {
             Vector2 pos = new Vector2();
             pos.x = piece.Position.x / 64;
@@ -100,7 +100,7 @@ namespace chess.Mark1Engine
 
         }
 
-        public static void Diagonal(Piece piece, Tile[,] Map, PossibleMove[,] moves)
+        private static void Diagonal(Piece piece, Tile[,] Map, PossibleMove[,] moves)
         {
             int x = (piece.Position.x / 64);
             int y = (piece.Position.y / 64);
@@ -167,7 +167,7 @@ namespace chess.Mark1Engine
             }
         }
 
-        public static void Pawn(Piece pawn, Tile[,] Map, PossibleMove[,] moves)
+        private static void Pawn(Piece pawn, Tile[,] Map, PossibleMove[,] moves)
         {
             int x = pawn.Position.x/64;
             int y = pawn.Position.y/64;
