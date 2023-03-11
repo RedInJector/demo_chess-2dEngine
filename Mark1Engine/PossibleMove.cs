@@ -13,11 +13,6 @@ namespace chess.Mark1Engine
         public Vector2 Scale = null;
         public Color color;
 
-       /* public PossibleMove()
-        {
-            color = Color.Transparent;
-        }*/
-
         public PossibleMove(Vector2 position, Color color)
         {
             this.Scale = new Vector2(64, 64);

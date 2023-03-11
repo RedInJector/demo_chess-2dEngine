@@ -41,7 +41,7 @@ namespace chess.Mark1Engine
             this.Scale = scale;
             this.tag = c;
             
-            image = new Bitmap((int)scale.x, (int)scale.y);
+            image = new Bitmap(scale.x, scale.y);
 
             
 
@@ -69,7 +69,7 @@ namespace chess.Mark1Engine
                     using (Graphics graphics = Graphics.FromImage(image))
             {
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.DrawImage(bitmap, new Rectangle(0, 0, (int)scale.x, (int)scale.x), spriteBounds, GraphicsUnit.Pixel);
+                graphics.DrawImage(bitmap, new Rectangle(0, 0, scale.x, scale.x), spriteBounds, GraphicsUnit.Pixel);
             }
             Engine.RegisterSprite(this);
         }
