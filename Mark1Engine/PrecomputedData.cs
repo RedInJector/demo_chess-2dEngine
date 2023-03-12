@@ -8,7 +8,7 @@ namespace chess.Mark1Engine
 {
     public class PrecomputedData
     {
-        public static readonly int[] DirectionOffset = {-8, 8, 1, -1, -7, 7, -9, 9};
+        public static readonly int[] DirectionOffset = {-8, 8, 1, -1, -7, 7, -9, 9 };
         public static readonly int[][] DistanceToTheEdge;
         static PrecomputedData()
         {
@@ -31,7 +31,8 @@ namespace chess.Mark1Engine
                     Math.Min(numNorth, numWest),
                     Math.Min(numSouth, numEast),
                     Math.Min(numNorth, numEast),
-                    Math.Min(numSouth, numWest)
+                    Math.Min(numSouth, numWest),
+
                     };
                 }
         }

@@ -41,22 +41,26 @@ namespace chess.Mark1Engine
             this.PieceOnTop = piece;
             this.PieceOnTop.Position = this.Position;
         }*/
-        public void Eat(Tile WhoAte)
+        public void Eat(Tile EatWho)
         {
-            if (this.PieceOnTop != null)
+            if (EatWho.PieceOnTop != null)
             {
-                this.PieceOnTop.DestroySelf();
-                this.PieceOnTop = null;
+                EatWho.PieceOnTop.DestroySelf();
+                EatWho.PieceOnTop = null;
             }
-            this.PieceOnTop = WhoAte.PieceOnTop;
-            WhoAte.PieceOnTop = null;
-            this.PieceOnTop.Position = this.Position;
-
+            Move(EatWho);
         }
 
         public void Move(Tile where)
         {
-
+            PieceOnTop.moves++;
+            if (PieceOnTop.firstmove)
+            {
+                PieceOnTop.firstmove = !PieceOnTop.firstmove;
+            }
+            where.PieceOnTop = this.PieceOnTop;
+            this.PieceOnTop = null;
+            where.PieceOnTop.Position = where.Position;
         }
 
         public bool PieceSide()

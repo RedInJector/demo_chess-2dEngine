@@ -168,7 +168,8 @@ namespace chess
                     else
                     {
                         Map[previousSelectedPos].restoreColor();
-                        Map[posP].Eat(Map[previousSelectedPos]);
+                        Map[previousSelectedPos].Eat(Map[posP]);
+                        //Map[posP].Eat(Map[previousSelectedPos]);
 
                         isWaitingForSecondClick = false;
 
@@ -180,7 +181,8 @@ namespace chess
                 else if (isWaitingForSecondClick)
                 {
                     Map[previousSelectedPos].restoreColor();
-                    Map[posP].Eat(Map[previousSelectedPos]);
+                    //Map[posP].Eat(Map[previousSelectedPos]);
+                    Map[previousSelectedPos].Eat(Map[posP]);
                     isWaitingForSecondClick = false;
                     currentMove = !currentMove;
                     ClearPossibleMoves();

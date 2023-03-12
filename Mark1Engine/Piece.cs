@@ -17,6 +17,7 @@ namespace chess.Mark1Engine
         public Image image;
         public bool side = false;
         public int moves = 0;
+        public bool firstmove = true;
         Bitmap bitmap = new Bitmap(SpriteSheetimage);
 
         Rectangle WK = new Rectangle(0, 0, 128, 128);
