@@ -54,6 +54,11 @@ namespace chess.Mark1Engine
 
         }
 
+        public void Move(Tile where)
+        {
+
+        }
+
         public bool PieceSide()
         {
             return this.PieceOnTop.side;

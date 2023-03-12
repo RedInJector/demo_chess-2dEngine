@@ -16,7 +16,7 @@ namespace chess.Mark1Engine
         public static Image SpriteSheetimage = Image.FromFile("Sprites/Pack1.png");
         public Image image;
         public bool side = false;
-        public bool firstmove = true;
+        public int moves = 0;
         Bitmap bitmap = new Bitmap(SpriteSheetimage);
 
         Rectangle WK = new Rectangle(0, 0, 128, 128);
@@ -69,6 +69,19 @@ namespace chess.Mark1Engine
                 graphics.DrawImage(bitmap, new Rectangle(0, 0, scale.x, scale.x), spriteBounds, GraphicsUnit.Pixel);
             }
             Engine.RegisterSprite(this);
+        }
+
+        public bool IsType(Char c)
+        {
+            if (this.tag.ToString().ToLower() == "q" && c.ToString().ToLower() == "b")
+                return true;
+            if (this.tag.ToString().ToLower() == "q" && c.ToString().ToLower() == "r")
+                return true;
+
+            if (this.tag.ToString().ToLower() == c.ToString().ToLower())
+                return true;
+
+            return false;
         }
 
         public void DestroySelf()

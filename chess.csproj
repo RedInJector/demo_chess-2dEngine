@@ -51,6 +51,7 @@
     <Compile Include="DemoGame.cs" />
     <Compile Include="Mark1Engine\LegalMove.cs" />
     <Compile Include="Mark1Engine\PossibleMove.cs" />
+    <Compile Include="Mark1Engine\PrecomputedData.cs" />
     <Compile Include="Mark1Engine\Tile.cs" />
     <Compile Include="Mark1Engine\Piece.cs" />
     <Compile Include="Program.cs" />

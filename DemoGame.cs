@@ -148,6 +148,10 @@ namespace chess
 
                         Map[posP].color = RED;
                         previousSelectedPos = posP;
+
+                        ClearPossibleMoves();
+                        LegalMove.Legal(Map[posP].PieceOnTop, Map, Move);
+                        
                     }
                 }
                 else if(Map[posP].hasPiece() && isWaitingForSecondClick)
@@ -157,6 +161,9 @@ namespace chess
                         Map[previousSelectedPos].restoreColor();
                         Map[posP].color = RED;
                         previousSelectedPos = posP;
+
+                        ClearPossibleMoves();
+                        LegalMove.Legal(Map[posP].PieceOnTop, Map, Move);
                     }
                     else
                     {
@@ -166,6 +173,8 @@ namespace chess
                         isWaitingForSecondClick = false;
 
                         currentMove = !currentMove;
+
+                        ClearPossibleMoves();
                     }  
                 }
                 else if (isWaitingForSecondClick)
@@ -174,6 +183,7 @@ namespace chess
                     Map[posP].Eat(Map[previousSelectedPos]);
                     isWaitingForSecondClick = false;
                     currentMove = !currentMove;
+                    ClearPossibleMoves();
                 }
             }
 
@@ -181,19 +191,17 @@ namespace chess
             drawBoard();
         }
 
-        /*
+        
         public void ClearPossibleMoves()
         {
             PossibleMove.DestroyALL();
-            for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                {
-                    if (Move[j, i] != null)
-                        Move[j, i] = null;
-                }
+            for (int i = 0; i < 64; i++)
+                if (Move[i] != null)
+                    Move[i] = null;
+                
         }
 
-        */
+        
 
         /*
         public void drawPossibleMoves()
