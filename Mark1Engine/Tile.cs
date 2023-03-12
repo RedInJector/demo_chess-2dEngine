@@ -36,26 +36,26 @@ namespace chess.Mark1Engine
             Engine.UnRegisterShape(this);
         }
 
-        public void setPiece(Piece piece)
+       /* public void setPiece(Piece piece)
         {
             this.PieceOnTop = piece;
             this.PieceOnTop.Position = this.Position;
+        }*/
+        public void Eat(Tile WhoAte)
+        {
+            if (this.PieceOnTop != null)
+            {
+                this.PieceOnTop.DestroySelf();
+                this.PieceOnTop = null;
+            }
+            this.PieceOnTop = WhoAte.PieceOnTop;
+            WhoAte.PieceOnTop = null;
+            this.PieceOnTop.Position = this.Position;
+
         }
 
-        public void removePiece()
+        public bool PieceSide()
         {
-            this.PieceOnTop = null;
-        }
-        public void eatPiece()
-        {
-            this.PieceOnTop.DestroySelf();
-            this.PieceOnTop = null;
-        }
-
-        public int PieceSide()
-        {
-            if(!hasPiece())
-                return -1;
             return this.PieceOnTop.side;
         }
 

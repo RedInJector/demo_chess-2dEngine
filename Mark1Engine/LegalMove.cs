@@ -8,6 +8,54 @@ using System.Security.Policy;
 
 namespace chess.Mark1Engine
 {
+    
+    public class LegalMove
+    {
+        static Color BLUE = Color.FromArgb(200, 0, 162, 255);
+        static int[][] DistanceToTheEdge;
+        public static void Legal(Piece piece, Tile[] Map, PossibleMove[] moves)
+        {
+            char c = piece.tag;
+            int pos = (piece.Position.x / 64 * piece.Position.y / 64 * 8);
+
+            switch (c.ToString().ToLower())
+            {
+                case "r":
+                    HorizontalVertical(piece, Map, moves);
+                    break;
+                /*case "p":
+                    Pawn(piece, Map, moves);
+                    break;
+                case "b":
+                    Diagonal(piece, Map, moves);
+                    break;
+                case "q":
+                    HorizontalVertical(piece, Map, moves);
+                    Diagonal(piece, Map, moves);
+                    break;*/
+                default:
+
+                    break;
+            }
+        }
+
+        private static void HorizontalVertical(Piece piece, Tile[] Map, PossibleMove[] moves)
+        {
+            int startingPosition = (piece.Position.x / 64 * piece.Position.y / 64 * 8);
+            bool a = true, b = false;
+            int[] direction = { -1, 1, 8, -8 };
+
+            for (int i = 0; i < directionIndex; i++)
+            {
+                
+
+            }
+
+        }
+    }
+
+
+    /*
     public class LegalMove
     {
         static Color color = Color.FromArgb(200, 0, 162, 255);
@@ -213,5 +261,5 @@ namespace chess.Mark1Engine
         
 
 
-    }
+    }*/
 }

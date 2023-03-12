@@ -15,10 +15,9 @@ namespace chess.Mark1Engine
         public char tag;
         public static Image SpriteSheetimage = Image.FromFile("Sprites/Pack1.png");
         public Image image;
-        public int side = 0;
+        public bool side = false;
         public bool firstmove = true;
         Bitmap bitmap = new Bitmap(SpriteSheetimage);
-
 
         Rectangle WK = new Rectangle(0, 0, 128, 128);
         Rectangle WQ = new Rectangle(128, 0, 128, 128);
@@ -43,20 +42,18 @@ namespace chess.Mark1Engine
             
             image = new Bitmap(scale.x, scale.y);
 
-            
-
             Rectangle spriteBounds = WP;
 
             tag = c;
             switch (c)
             {
 
-                case 'P': spriteBounds = WP; side = 1; break;
-                case 'N': spriteBounds = WN; side = 1; break;
-                case 'B': spriteBounds = WB; side = 1; break;
-                case 'Q': spriteBounds = WQ; side = 1; break;
-                case 'K': spriteBounds = WK; side = 1; break;
-                case 'R': spriteBounds = WR; side = 1; break;
+                case 'P': spriteBounds = WP; side = true; break;
+                case 'N': spriteBounds = WN; side = true; break;
+                case 'B': spriteBounds = WB; side = true; break;
+                case 'Q': spriteBounds = WQ; side = true; break;
+                case 'K': spriteBounds = WK; side = true; break;
+                case 'R': spriteBounds = WR; side = true; break;
                 case 'p': spriteBounds = BP; break;
                 case 'n': spriteBounds = BN; break;
                 case 'b': spriteBounds = BB; break;
