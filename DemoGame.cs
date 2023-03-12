@@ -21,6 +21,7 @@ namespace chess
         Vector2 MouseReleasedTile = null;
 
         int previousSelectedPos = -1;
+        int enpassantTarget = -1;
 
         Color RED = Color.Red;
         Color GREEN = Color.Green;
@@ -95,10 +96,6 @@ namespace chess
                 
             }
 
-
-            
-
-
         }
 
         public override void OnUpdate()
@@ -171,11 +168,7 @@ namespace chess
                         Map[previousSelectedPos].Eat(Map[posP]);
                         //Map[posP].Eat(Map[previousSelectedPos]);
 
-                        isWaitingForSecondClick = false;
-
-                        currentMove = !currentMove;
-
-                        ClearPossibleMoves();
+                        OnMove(posP);
                     }  
                 }
                 else if (isWaitingForSecondClick)
@@ -183,16 +176,39 @@ namespace chess
                     Map[previousSelectedPos].restoreColor();
                     //Map[posP].Eat(Map[previousSelectedPos]);
                     Map[previousSelectedPos].Eat(Map[posP]);
-                    isWaitingForSecondClick = false;
-                    currentMove = !currentMove;
-                    ClearPossibleMoves();
+
+                    OnMove(posP);
                 }
             }
-
 
             drawBoard();
         }
 
+        public void OnMove(int pos)
+        {
+            ClearPossibleMoves();
+            isWaitingForSecondClick = false;
+            currentMove = !currentMove;
+
+            if (enpassantTarget > 0 && Map[enpassantTarget].hasPiece())
+            {
+                Map[enpassantTarget].PieceOnTop.EnPassantTarget = false;
+                enpassantTarget = -1;
+            }
+
+            else if (enpassantTarget > 0)
+            {
+                enpassantTarget = -1;
+            }
+
+            if (Map[pos].PieceOnTop.IsType('p') && Map[pos].PieceOnTop.moves == 1)
+            {
+                enpassantTarget = pos;
+                Map[pos].PieceOnTop.EnPassantTarget = true;
+            }
+
+
+        }
         
         public void ClearPossibleMoves()
         {
@@ -202,8 +218,6 @@ namespace chess
                     Move[i] = null;
                 
         }
-
-        
 
         /*
         public void drawPossibleMoves()

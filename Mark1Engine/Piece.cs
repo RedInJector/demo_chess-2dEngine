@@ -19,6 +19,7 @@ namespace chess.Mark1Engine
         public int moves = 0;
         public bool firstmove = true;
         Bitmap bitmap = new Bitmap(SpriteSheetimage);
+        public bool EnPassantTarget = false;
 
         Rectangle WK = new Rectangle(0, 0, 128, 128);
         Rectangle WQ = new Rectangle(128, 0, 128, 128);

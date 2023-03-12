@@ -18,7 +18,6 @@ namespace chess.Mark1Engine
         static int[][] distanceToTheEdge = PrecomputedData.DistanceToTheEdge;
         static int[] directionOffset = PrecomputedData.DirectionOffset;
 
-
         public static void Legal(Piece piece, Tile[] Map, PossibleMove[] moves)
         {
             
@@ -103,9 +102,6 @@ namespace chess.Mark1Engine
                 moves[targetSquare + index] = new PossibleMove(pos, BLUE);
             }
             
-                
-            
-
             int index2 = 1;
             if (Map[targetSquare].Position.x / 64 >= 0)
             {
@@ -114,9 +110,10 @@ namespace chess.Mark1Engine
                     Vector2 pos = Map[targetSquare + index2].Position;
                     moves[targetSquare + index2] = new PossibleMove(pos, BLUE);
                 }
-                if(Map[startingPosition + index2].hasPiece() && 
+                if (Map[startingPosition + index2].hasPiece() &&
                    Map[startingPosition + index2].PieceOnTop.IsType('p') &&
-                   Map[startingPosition + index2].PieceOnTop.moves == 1)
+                   Map[startingPosition + index2].PieceOnTop.moves == 1 &&
+                   Map[startingPosition + index2].PieceOnTop.EnPassantTarget == true)
                 { 
                     Vector2 pos = Map[startingPosition + index2 + index].Position;
                     moves[startingPosition + index2 + index] = new PossibleMove(pos, PURPULE);
@@ -132,7 +129,8 @@ namespace chess.Mark1Engine
                 }
                 if (Map[startingPosition + index2].hasPiece() &&
                    Map[startingPosition + index2].PieceOnTop.IsType('p') &&
-                   Map[startingPosition + index2].PieceOnTop.moves == 1)
+                   Map[startingPosition + index2].PieceOnTop.moves == 1 &&
+                   Map[startingPosition + index2].PieceOnTop.EnPassantTarget == true)
                 {
                     Vector2 pos = Map[startingPosition + index2 + index].Position;
                     moves[startingPosition + index2 + index] = new PossibleMove(pos, PURPULE);
