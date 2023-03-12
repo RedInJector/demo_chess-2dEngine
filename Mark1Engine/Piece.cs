@@ -85,6 +85,12 @@ namespace chess.Mark1Engine
             return false;
         }
 
+        public int GetMapPosition()
+        {
+
+            return ((this.Position.x / 64) + (this.Position.y / 64) * 8); ;
+        }
+
         public void DestroySelf()
         {
             Engine.UnRegisterSprite(this);

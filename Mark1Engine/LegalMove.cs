@@ -166,29 +166,29 @@ namespace chess.Mark1Engine
 
         private static void Knight(Piece piece, Tile[] Map, PossibleMove[] moves)
         {
-            int[] index = {-6, 10, 17, 15};
+            int[] possibleMoves = { -17, -15, -10, -6, 6, 10, 15, 17 };
 
-            int startingPosition = ((piece.Position.x / 64) + (piece.Position.y / 64) * 8);
+            foreach (int move in possibleMoves)
+            {
+                int destination = piece.GetMapPosition() + move;
 
-            for (int i = 0; i < 4; i++)
-                for (int j = 0; j < 2; j++) { 
-                    int targetPosition = startingPosition + index[i];
-
-                    if (targetPosition < 0 || targetPosition > 63)
-                        continue;
-
-                    if (Map[targetPosition].hasPiece() && Map[targetPosition].PieceOnTop.side == piece.side)
-                        continue;
-
-                    Vector2 pos = Map[targetPosition].Position;
-                    moves[targetPosition] = new PossibleMove(pos, BLUE);
-
-                    index[i] = -index[i];
+                if (destination >= 0 && destination < 64 && 
+                    Math.Abs(piece.GetMapPosition() % 8 - destination % 8) <= 2 && 
+                    Math.Abs(piece.GetMapPosition() / 8 - destination / 8) <= 2 && 
+                    (Map[destination].PieceOnTop == null || 
+                    (Map[destination].PieceOnTop.side 
+                    != Map[piece.GetMapPosition()].PieceOnTop.side)))
+                {
+                    Vector2 pos = Map[destination].Position;
+                    moves[destination] = new PossibleMove(pos, BLUE);
                 }
+
             }
+
+
         }
     
-
+}
 
   
 }
