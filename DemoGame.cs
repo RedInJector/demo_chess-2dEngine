@@ -8,6 +8,8 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using chess.Mark1Engine.BasicPieces;
+using System.Media;
+using NAudio.Wave;
 
 namespace chess
 {
@@ -34,7 +36,6 @@ namespace chess
         public static List<AbstractPiece> BlackPieces = new List<AbstractPiece>();
 
         public King WhiteKing, BlackKing;
-
 
         public override void OnDraw()
         {
@@ -142,6 +143,20 @@ namespace chess
                 
             }
 
+            PlayMusic();
+        }
+
+
+        private WaveOutEvent outputDevice;
+        private AudioFileReader audioFile;
+        public void PlayMusic()
+        {
+            outputDevice = new WaveOutEvent();
+            audioFile = new AudioFileReader("Music/toby fox - UNDERTALE Soundtrack - 92 Reunited.mp3");
+
+            outputDevice.Volume = 0.05f;
+            outputDevice.Init(audioFile);
+            outputDevice.Play();
         }
 
         public override void OnUpdate()
