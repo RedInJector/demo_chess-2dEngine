@@ -21,8 +21,8 @@ namespace chess
         Vector2 MousePressedTile = null;
         Vector2 MouseReleasedTile = null;
 
-        public bool[] AttackedByWhite = new bool[64];
-        public bool[] AttackedByBlack = new bool[64];
+        public static bool[] AttackedByWhite = new bool[64];
+        public static bool[] AttackedByBlack = new bool[64];
 
         int previousSelectedPos = -1;
         int enpassantTarget = -1;
@@ -33,6 +33,7 @@ namespace chess
         public static List<AbstractPiece> WhitePieces = new List<AbstractPiece>();
         public static List<AbstractPiece> BlackPieces = new List<AbstractPiece>();
 
+        public King WhiteKing, BlackKing;
 
 
         public override void OnDraw()
@@ -121,9 +122,11 @@ namespace chess
                             break;
                         case 'K':
                             Map[pos].PieceOnTop = new King(new Vector2(x * 64, y * 64), true);
+                            WhiteKing = Map[pos].PieceOnTop as King;
                             break;
                         case 'k':
                             Map[pos].PieceOnTop = new King(new Vector2(x * 64, y * 64), false);
+                            BlackKing = Map[pos].PieceOnTop as King;
                             break;
                         case 'P':
                             Map[pos].PieceOnTop = new Pawn(new Vector2(x * 64, y * 64), true);
@@ -162,7 +165,7 @@ namespace chess
 
 
         private bool isWaitingForSecondClick = false;
-        private bool currentMove = true;
+        public static bool currentMove = true;
         public override void MouseUp(MouseEventArgs e)
         {
             //bool wasPressed = false;
@@ -194,7 +197,7 @@ namespace chess
                         
                     }
                 }
-                else if(Map[posP].hasPiece() && isWaitingForSecondClick)
+                else if(Map[posP].hasPiece() && isWaitingForSecondClick && Move[posP] != null)
                 {
                     if(Map[posP].PieceOnTop.getSide() == Map[previousSelectedPos].PieceOnTop.getSide())
                     {
@@ -213,7 +216,7 @@ namespace chess
                         OnMove(posP);
                     }  
                 }
-                else if (isWaitingForSecondClick)
+                else if (isWaitingForSecondClick && Move[posP] != null)
                 {
                     Map[previousSelectedPos].restoreColor();
 
@@ -222,13 +225,11 @@ namespace chess
                     OnMove(posP);
                 }
             }
-
-            drawBoard();
         }
 
         public void OnMove(int pos)
         {
-            currentMove = !currentMove;
+            
             ClearPossibleMoves();
             previousSelectedPos = -1;
             isWaitingForSecondClick = false;
@@ -252,18 +253,42 @@ namespace chess
                 enpassantTarget = pos;
                 pawn.EnPassantTarget = true;
             }
-            ClearAttacked();
+
+            if(currentMove == true)
+                ClearAttackedByWhite();
+            else
+                ClearAttackedByBlack();
+
             CalculateAttackedSquares();
 
+            if (currentMove == true)
+            {
+                if (AttackedByWhite[BlackKing.GetMapPosition()] == true)
+                    Console.WriteLine("\n\nBlack King was Checked!!\n\n");
+            }
+            else
+            {
+                if (AttackedByBlack[WhiteKing.GetMapPosition()] == true)
+                    Console.WriteLine("\n\nWhite King was Checked!!\n\n");
+            }
+
+            drawBoard();
+            currentMove = !currentMove;
         }
 
         public void CalculateAttackedSquares()
         {
-            foreach(AbstractPiece piece in WhitePieces)
-            {
-                piece.CalculateAttackSquares(AttackedByWhite);
-            }
-            drawAttackedByWhite();
+            if(currentMove == true)
+                foreach(AbstractPiece piece in WhitePieces)
+                {
+                    piece.CalculateAttackSquares(AttackedByWhite);
+                }
+            else
+                foreach (AbstractPiece piece in BlackPieces)
+                {
+                    piece.CalculateAttackSquares(AttackedByBlack);
+                }
+            drawAttacked();
         }
         public void ClearPossibleMoves()
         {
@@ -288,7 +313,7 @@ namespace chess
             Console.WriteLine();
         }
 
-        public void drawAttackedByWhite()
+        public void drawAttacked()
         {
             Console.WriteLine();
             Console.WriteLine("Attacked By White");
@@ -303,14 +328,36 @@ namespace chess
             }
             Console.WriteLine();
             Console.WriteLine();
+
+            Console.WriteLine();
+            Console.WriteLine("Attacked By Black");
+            for (int i = 1; i <= 64; i++)
+            {
+                if (AttackedByBlack[i - 1] != false)
+                    Console.Write("#");
+                else Console.Write('`');
+
+                if ((i) % 8 == 0)
+                    Console.Write("\n");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
         }
 
-        public void ClearAttacked()
+        public void ClearAttackedByWhite()
         {
             for (int i = 0; i < 64; i++)
             {
                 if (AttackedByWhite[i] != false)
                     AttackedByWhite[i] = false;
+            }
+        }
+        public void ClearAttackedByBlack()
+        {
+            for (int i = 0; i < 64; i++)
+            {
+                if (AttackedByBlack[i] != false)
+                    AttackedByBlack[i] = false;
             }
         }
         

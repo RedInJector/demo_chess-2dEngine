@@ -52,7 +52,7 @@ namespace chess.Mark1Engine.BasicPieces
                     DemoGame.Map[destination].PieceOnTop.side
                     == DemoGame.Map[GetMapPosition()].PieceOnTop.side))
                 {
-                    a[destination] = true;
+                        a[destination] = true;
                 }
 
             }
@@ -73,6 +73,7 @@ namespace chess.Mark1Engine.BasicPieces
                     (DemoGame.Map[destination].PieceOnTop.side
                     != DemoGame.Map[GetMapPosition()].PieceOnTop.side)))
                 {
+
                     Vector2 pos = DemoGame.Map[destination].Position;
                     DemoGame.Move[destination] = new PossibleMove(pos, BLUE);
                 }

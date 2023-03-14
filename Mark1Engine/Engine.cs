@@ -28,7 +28,6 @@ namespace chess.Mark1Engine
         private Thread GameLoopThread = null;
 
         private static List<Tile> AllShapes = new List<Tile>();
-        private static List<Piece1> AllSprites = new List<Piece1>();
         private static List<AbstractPiece> AllAbstractPieces = new List<AbstractPiece>();
         private static List<PossibleMove> PossibleMoves = new List<PossibleMove>();
 
@@ -98,14 +97,6 @@ namespace chess.Mark1Engine
             AllAbstractPieces.Remove(piece);
         }
 
-        public static void RegisterSprite(Piece1 sprite)
-        {
-            AllSprites.Add(sprite);
-        }
-        public static void UnRegisterSprite(Piece1 sprite)
-        {
-            AllSprites.Remove(sprite);
-        }
 
         void GameLoop()
         {
@@ -141,10 +132,6 @@ namespace chess.Mark1Engine
                 {
                     g.FillRectangle(new SolidBrush(move.color), move.Position.x, move.Position.y, move.Scale.x, move.Scale.y);
                 }
-            foreach(Piece1 sprite in AllSprites)
-            {
-                g.DrawImage(sprite.image, sprite.Position.x, sprite.Position.y);
-            }
 
             foreach (AbstractPiece piece in AllAbstractPieces)
             {
