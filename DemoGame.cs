@@ -21,13 +21,17 @@ namespace chess
         Vector2 MousePressedTile = null;
         Vector2 MouseReleasedTile = null;
 
+        public bool[] AttackedByWhite = new bool[64];
+        public bool[] AttackedByBlack = new bool[64];
+
         int previousSelectedPos = -1;
         int enpassantTarget = -1;
 
         Color RED = Color.Red;
         Color GREEN = Color.Green;
 
-        
+        public static List<AbstractPiece> WhitePieces = new List<AbstractPiece>();
+        public static List<AbstractPiece> BlackPieces = new List<AbstractPiece>();
 
 
 
@@ -229,15 +233,38 @@ namespace chess
             previousSelectedPos = -1;
             isWaitingForSecondClick = false;
 
-            enpassantTarget = -1;
-            if (Map[pos].PieceOnTop.IsType('p'))
+
+            if (enpassantTarget > 0 && Map[enpassantTarget].hasPiece())
             {
-                enpassantTarget = pos;
+                Pawn pawn  = Map[enpassantTarget].PieceOnTop as Pawn;
+                pawn.EnPassantTarget = false;
+                enpassantTarget = -1;
+            }
+
+            else if (enpassantTarget > 0)
+            {
+                enpassantTarget = -1;
+            }
+
+            if (Map[pos].PieceOnTop.IsType('p') && Map[pos].PieceOnTop.moves == 1)
+            {
                 Pawn pawn = Map[pos].PieceOnTop as Pawn;
+                enpassantTarget = pos;
                 pawn.EnPassantTarget = true;
             }
+            ClearAttacked();
+            CalculateAttackedSquares();
+
         }
-        
+
+        public void CalculateAttackedSquares()
+        {
+            foreach(AbstractPiece piece in WhitePieces)
+            {
+                piece.CalculateAttackSquares(AttackedByWhite);
+            }
+            drawAttackedByWhite();
+        }
         public void ClearPossibleMoves()
         {
             PossibleMove.DestroyALL();
@@ -249,6 +276,7 @@ namespace chess
 
         public void drawBoard()
         {
+            Console.WriteLine();
             for (int i = 1; i <= 64; i++)
             {
                 if (Map[i-1].PieceOnTop != null)
@@ -257,8 +285,34 @@ namespace chess
                 if((i) % 8 == 0)
                     Console.Write("\n");
             }
+            Console.WriteLine();
         }
 
+        public void drawAttackedByWhite()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Attacked By White");
+            for (int i = 1; i <= 64; i++)
+            {
+                if (AttackedByWhite[i-1] != false)
+                    Console.Write("#");
+                else Console.Write('`');
+
+                if ((i) % 8 == 0)
+                    Console.Write("\n");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+        }
+
+        public void ClearAttacked()
+        {
+            for (int i = 0; i < 64; i++)
+            {
+                if (AttackedByWhite[i] != false)
+                    AttackedByWhite[i] = false;
+            }
+        }
         
     }
 }

@@ -37,7 +37,25 @@ namespace chess.Mark1Engine.BasicPieces
 
         public override void CalculateAttackSquares(bool[] a)
         {
-            throw new NotImplementedException();
+            int[] possibleMoves = { -17, -15, -10, -6, 6, 10, 15, 17 };
+
+            foreach (int move in possibleMoves)
+            {
+                int destination = GetMapPosition() + move;
+
+                if (destination >= 0 && destination < 64 &&
+                    Math.Abs(GetMapPosition() % 8 - destination % 8) <= 2 &&
+                    Math.Abs(GetMapPosition() / 8 - destination / 8) <= 2 &&
+                    (DemoGame.Map[destination].PieceOnTop == null ||
+                    ((DemoGame.Map[destination].PieceOnTop.side
+                    != DemoGame.Map[GetMapPosition()].PieceOnTop.side)) ||
+                    DemoGame.Map[destination].PieceOnTop.side
+                    == DemoGame.Map[GetMapPosition()].PieceOnTop.side))
+                {
+                    a[destination] = true;
+                }
+
+            }
         }
 
         public override void CalculatePossibleMoves()

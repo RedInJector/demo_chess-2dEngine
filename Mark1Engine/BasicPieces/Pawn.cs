@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace chess.Mark1Engine.BasicPieces
 {
@@ -38,7 +39,26 @@ namespace chess.Mark1Engine.BasicPieces
 
         public override void CalculateAttackSquares(bool[] a)
         {
-            
+            int startingPosition = ((Position.x / 64) + (Position.y / 64) * 8);
+            int index = 8;
+            if (side)
+            {
+                index *= -1;
+            }
+
+            int targetSquare = startingPosition + index;
+            if (targetSquare < 0 || targetSquare > 63)
+                return;
+
+            int index2 = 1;
+            if (DemoGame.Map[targetSquare].Position.x / 64 >= 0)
+                    a[targetSquare + index2] = true;
+ 
+
+            index2 = -1;
+            if (DemoGame.Map[targetSquare].Position.x / 64 <= 7)
+                    a[targetSquare + index2] = true;
+
         }
 
         public override void CalculatePossibleMoves()
@@ -67,6 +87,7 @@ namespace chess.Mark1Engine.BasicPieces
                 DemoGame.Move[targetSquare + index] = new PossibleMove(pos, BLUE);
             }
 
+            // 2 ifs' for enPassant calculation
             int index2 = 1;
             if (DemoGame.Map[targetSquare].Position.x / 64 >= 0)
             {

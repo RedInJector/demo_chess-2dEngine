@@ -49,10 +49,11 @@ namespace chess.Mark1Engine.BasicPieces
                 {
                     int targetSquare = startingPosition + PrecomputedData.DirectionOffset[directionIndex] * (n);
 
+                    
+                    a[targetSquare] = true;
+
                     if (DemoGame.Map[targetSquare].hasPiece() && DemoGame.Map[targetSquare].PieceSide() == this.side)
                         break;
-
-                    a[targetSquare] = true;
 
                     if (DemoGame.Map[targetSquare].hasPiece() && DemoGame.Map[targetSquare].PieceSide() != this.side)
                         break;

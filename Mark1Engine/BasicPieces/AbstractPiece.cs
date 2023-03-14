@@ -73,6 +73,11 @@ namespace chess.Mark1Engine.BasicPieces
 
         public void RegisterPiece()
         {
+            if(this.side)
+                DemoGame.WhitePieces.Add(this);
+            else
+                DemoGame.BlackPieces.Add(this);
+
             Engine.RegisterPiece(this);
         }
         public void DestroySelf()

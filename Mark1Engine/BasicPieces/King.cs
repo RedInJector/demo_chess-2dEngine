@@ -45,9 +45,6 @@ namespace chess.Mark1Engine.BasicPieces
                 if (targetPosition < 0 || targetPosition > 63)
                     continue;
 
-                if (DemoGame.Map[targetPosition].hasPiece() && DemoGame.Map[targetPosition].PieceOnTop.side == side)
-                    continue;
-
                 a[targetPosition] = true;
             }
         }
