@@ -1,4 +1,5 @@
-﻿using System;
+﻿using chess.Mark1Engine.BasicPieces;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -16,7 +17,7 @@ namespace chess.Mark1Engine
         public string tag = "";
         public  Color color;
         private Color originalColor;
-        public Piece PieceOnTop { get; set; }
+        public AbstractPiece PieceOnTop { get; set; }
 
         public Tile(Vector2 position, Vector2 scale, Color color, string tag)
         {
@@ -54,10 +55,6 @@ namespace chess.Mark1Engine
         public void Move(Tile where)
         {
             PieceOnTop.moves++;
-            if (PieceOnTop.firstmove)
-            {
-                PieceOnTop.firstmove = !PieceOnTop.firstmove;
-            }
             where.PieceOnTop = this.PieceOnTop;
             this.PieceOnTop = null;
             where.PieceOnTop.Position = where.Position;
@@ -65,7 +62,7 @@ namespace chess.Mark1Engine
 
         public bool PieceSide()
         {
-            return this.PieceOnTop.side;
+            return this.PieceOnTop.getSide();
         }
 
         public bool hasPiece()

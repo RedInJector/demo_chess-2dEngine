@@ -18,7 +18,7 @@ namespace chess.Mark1Engine
         static int[][] distanceToTheEdge = PrecomputedData.DistanceToTheEdge;
         static int[] directionOffset = PrecomputedData.DirectionOffset;
 
-        public static void Legal(Piece piece, Tile[] Map, PossibleMove[] moves)
+        public static void Legal(Piece1 piece, Tile[] Map, PossibleMove[] moves)
         {
             
 
@@ -38,9 +38,9 @@ namespace chess.Mark1Engine
                 case "q":
                     Sliding(piece, Map, moves);
                     break;
-                case "p":
+                /*case "p":
                     Pawn(piece, Map, moves);
-                    break;
+                    break;*/
                 case "k":
                     King(piece, Map, moves);
                     break;
@@ -53,7 +53,7 @@ namespace chess.Mark1Engine
             }
         }
 
-        private static void Sliding(Piece piece, Tile[] Map, PossibleMove[] moves)
+        private static void Sliding(Piece1 piece, Tile[] Map, PossibleMove[] moves)
         {
             int startDirIndex = (piece.IsType('r')) ? 0 : 4;
             int EndDirIndex = (piece.IsType('b')) ? 8 : 4;
@@ -76,8 +76,8 @@ namespace chess.Mark1Engine
                         break;
                 }
         }
-
-        private static void Pawn(Piece piece, Tile[] Map, PossibleMove[] moves)
+        /*
+        private static void Pawn(Piece1 piece, Tile[] Map, PossibleMove[] moves)
         {
             int startingPosition = ((piece.Position.x / 64) + (piece.Position.y / 64) * 8);
             
@@ -138,8 +138,8 @@ namespace chess.Mark1Engine
             }
 
         }
-
-        private static void King(Piece piece, Tile[] Map, PossibleMove[] moves)
+        */
+        private static void King(Piece1 piece, Tile[] Map, PossibleMove[] moves)
         {
             int startingPosition = ((piece.Position.x / 64) + (piece.Position.y / 64) * 8);
 
@@ -162,7 +162,7 @@ namespace chess.Mark1Engine
             }
         }
 
-        private static void Knight(Piece piece, Tile[] Map, PossibleMove[] moves)
+        private static void Knight(Piece1 piece, Tile[] Map, PossibleMove[] moves)
         {
             int[] possibleMoves = { -17, -15, -10, -6, 6, 10, 15, 17 };
 

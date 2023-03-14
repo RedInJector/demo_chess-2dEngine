@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using chess.Mark1Engine.BasicPieces;
 
 namespace chess
 {
@@ -14,8 +15,8 @@ namespace chess
     {
         public DemoGame() : base(new Vector2(528, 551), "Engine Demo") { }
 
-        Tile[] Map = new Tile[64];
-        PossibleMove[]Move = new PossibleMove[64];
+        public static Tile[] Map = new Tile[64];
+        public static PossibleMove[]Move = new PossibleMove[64];
 
         Vector2 MousePressedTile = null;
         Vector2 MouseReleasedTile = null;
@@ -88,7 +89,45 @@ namespace chess
 
                 if (!numbers.Contains(c))
                 {
-                    Map[pos].PieceOnTop = new Piece(new Vector2(x * 64, y * 64), new Vector2(64, 64), c);
+                    //Map[pos].PieceOnTop = new Piece1(new Vector2(x * 64, y * 64), new Vector2(64, 64), c);
+                    switch(c){
+                        case 'R':
+                            Map[pos].PieceOnTop = new Rook(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'r':
+                            Map[pos].PieceOnTop = new Rook(new Vector2(x * 64, y * 64), false);
+                            break;
+                        case 'B':
+                            Map[pos].PieceOnTop = new Bishop(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'b':
+                            Map[pos].PieceOnTop = new Bishop(new Vector2(x * 64, y * 64), false);
+                            break;
+                        case 'Q':
+                            Map[pos].PieceOnTop = new Queen(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'q':
+                            Map[pos].PieceOnTop = new Queen(new Vector2(x * 64, y * 64), false);
+                            break;
+                        case 'N':
+                            Map[pos].PieceOnTop = new Knight(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'n':
+                            Map[pos].PieceOnTop = new Knight(new Vector2(x * 64, y * 64), false);
+                            break;
+                        case 'K':
+                            Map[pos].PieceOnTop = new King(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'k':
+                            Map[pos].PieceOnTop = new King(new Vector2(x * 64, y * 64), false);
+                            break;
+                        case 'P':
+                            Map[pos].PieceOnTop = new Pawn(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'p':
+                            Map[pos].PieceOnTop = new Pawn(new Vector2(x * 64, y * 64), false);
+                            break;
+                    }
                     x = x + 1;
                     pos++;
                 }
@@ -131,10 +170,10 @@ namespace chess
 
             int posP = (MousePressedTile.x + MousePressedTile.y * 8) ;
             int posR = (MouseReleasedTile.x + MouseReleasedTile.y * 8);
-            //Console.WriteLine(Map[pos].PieceOnTop.tag);
 
 
             Console.WriteLine(posP);
+            //Console.WriteLine(Map[posP].PieceSide());
             if (posP == posR)
             {
                 if (Map[posP].hasPiece() && !isWaitingForSecondClick)
@@ -147,26 +186,25 @@ namespace chess
                         previousSelectedPos = posP;
 
                         ClearPossibleMoves();
-                        LegalMove.Legal(Map[posP].PieceOnTop, Map, Move);
+                        Map[posP].PieceOnTop.CalculatePossibleMoves();
                         
                     }
                 }
                 else if(Map[posP].hasPiece() && isWaitingForSecondClick)
                 {
-                    if(Map[posP].PieceOnTop.side == Map[previousSelectedPos].PieceOnTop.side)
+                    if(Map[posP].PieceOnTop.getSide() == Map[previousSelectedPos].PieceOnTop.getSide())
                     {
                         Map[previousSelectedPos].restoreColor();
                         Map[posP].color = RED;
                         previousSelectedPos = posP;
 
                         ClearPossibleMoves();
-                        LegalMove.Legal(Map[posP].PieceOnTop, Map, Move);
+                        Map[posP].PieceOnTop.CalculatePossibleMoves();
                     }
                     else
                     {
                         Map[previousSelectedPos].restoreColor();
                         Map[previousSelectedPos].Eat(Map[posP]);
-                        //Map[posP].Eat(Map[previousSelectedPos]);
 
                         OnMove(posP);
                     }  
@@ -174,7 +212,7 @@ namespace chess
                 else if (isWaitingForSecondClick)
                 {
                     Map[previousSelectedPos].restoreColor();
-                    //Map[posP].Eat(Map[previousSelectedPos]);
+
                     Map[previousSelectedPos].Eat(Map[posP]);
 
                     OnMove(posP);
@@ -186,28 +224,18 @@ namespace chess
 
         public void OnMove(int pos)
         {
-            ClearPossibleMoves();
-            isWaitingForSecondClick = false;
             currentMove = !currentMove;
+            ClearPossibleMoves();
+            previousSelectedPos = -1;
+            isWaitingForSecondClick = false;
 
-            if (enpassantTarget > 0 && Map[enpassantTarget].hasPiece())
-            {
-                Map[enpassantTarget].PieceOnTop.EnPassantTarget = false;
-                enpassantTarget = -1;
-            }
-
-            else if (enpassantTarget > 0)
-            {
-                enpassantTarget = -1;
-            }
-
-            if (Map[pos].PieceOnTop.IsType('p') && Map[pos].PieceOnTop.moves == 1)
+            enpassantTarget = -1;
+            if (Map[pos].PieceOnTop.IsType('p'))
             {
                 enpassantTarget = pos;
-                Map[pos].PieceOnTop.EnPassantTarget = true;
+                Pawn pawn = Map[pos].PieceOnTop as Pawn;
+                pawn.EnPassantTarget = true;
             }
-
-
         }
         
         public void ClearPossibleMoves()
@@ -219,21 +247,6 @@ namespace chess
                 
         }
 
-        /*
-        public void drawPossibleMoves()
-        {
-            Console.WriteLine("\n");
-            for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                {
-                    if (j == 0) Console.Write("\n");
-                    if (Move[j, i] != null)
-                        Console.Write("#");
-                    else Console.Write("`");
-
-                }
-        }
-        */
         public void drawBoard()
         {
             for (int i = 1; i <= 64; i++)

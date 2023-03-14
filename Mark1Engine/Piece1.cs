@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace chess.Mark1Engine
 {
-    public class Piece
+    public class Piece1
     {
         public Vector2 Position = null;
         public Vector2 Scale = null;
@@ -35,8 +35,8 @@ namespace chess.Mark1Engine
         Rectangle BR = new Rectangle(512, 128, 128, 128);
         Rectangle BP = new Rectangle(640, 128, 128, 128);
 
-        public Piece() { }
-        public Piece(Vector2 position, Vector2 scale, char c)
+        public Piece1() { }
+        public Piece1(Vector2 position, Vector2 scale, char c)
         {
             this.Position = position;
             this.Scale = scale;
@@ -65,7 +65,7 @@ namespace chess.Mark1Engine
             }
 
 
-                    using (Graphics graphics = Graphics.FromImage(image))
+            using (Graphics graphics = Graphics.FromImage(image))
             {
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.DrawImage(bitmap, new Rectangle(0, 0, scale.x, scale.x), spriteBounds, GraphicsUnit.Pixel);
