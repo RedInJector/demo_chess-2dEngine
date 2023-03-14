@@ -49,11 +49,9 @@ namespace chess.Mark1Engine.BasicPieces
 
                     a[targetSquare] = true;
 
-                    if (DemoGame.Map[targetSquare].hasPiece() && DemoGame.Map[targetSquare].PieceSide() == this.side)
+                    if (DemoGame.Map[targetSquare].hasPiece())
                         break;
 
-                    if (DemoGame.Map[targetSquare].hasPiece() && DemoGame.Map[targetSquare].PieceSide() != this.side)
-                        break;
                 }
         }
 
