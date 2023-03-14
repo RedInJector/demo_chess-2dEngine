@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using chess.Mark1Engine.BasicPieces;
 
 namespace chess
 {
@@ -14,17 +15,23 @@ namespace chess
     {
         public DemoGame() : base(new Vector2(528, 551), "Engine Demo") { }
 
-        Tile[,] Map = new Tile[8, 8];
-        PossibleMove[,]Move = new PossibleMove[8, 8];
+        public static Tile[] Map = new Tile[64];
+        public static PossibleMove[]Move = new PossibleMove[64];
 
         Vector2 MousePressedTile = null;
         Vector2 MouseReleasedTile = null;
-        Vector2 previousSelectedTile = null;
+
+        public bool[] AttackedByWhite = new bool[64];
+        public bool[] AttackedByBlack = new bool[64];
+
+        int previousSelectedPos = -1;
+        int enpassantTarget = -1;
 
         Color RED = Color.Red;
         Color GREEN = Color.Green;
 
-        
+        public static List<AbstractPiece> WhitePieces = new List<AbstractPiece>();
+        public static List<AbstractPiece> BlackPieces = new List<AbstractPiece>();
 
 
 
@@ -37,6 +44,7 @@ namespace chess
         {
             Color color;
             bool b = true;
+            int pos = 0;
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
@@ -50,11 +58,13 @@ namespace chess
                         color = Color.FromArgb(255, 176, 121, 21);
                     }
                     b = !b;
-                    Map[i, j] = new Tile(new Vector2(i * 64, j * 64), new Vector2(64, 64), color, "Tile");
+                    Map[pos] = new Tile(new Vector2(j * 64, i * 64), new Vector2(64, 64), color, "Tile");
+                    pos++;
 
                 }
                 b = !b;
             }
+
 
             string position = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
             string numbers = "12345678";
@@ -62,33 +72,72 @@ namespace chess
 
             int x = 0;
             int y = 0;
+            pos = 0;
             foreach (char c in position)
             {
                 //Console.WriteLine(c);
-
+                //Console.WriteLine(pos);
                 if (c == '/')
                 {
                     y++;
                     x = 0;
+                    
                     continue;
                 }
                 //Console.WriteLine(x + "   " + y);
                 if (numbers.Contains(c)) {
                     x = x + int.Parse(c.ToString());
-
+                    pos = pos + int.Parse(c.ToString());
+                    continue;
                 }
 
                 if (!numbers.Contains(c))
                 {
-                    Map[x,y].PieceOnTop = new Piece(new Vector2(x * 64, y * 64), new Vector2(64, 64), c);
+                    //Map[pos].PieceOnTop = new Piece1(new Vector2(x * 64, y * 64), new Vector2(64, 64), c);
+                    switch(c){
+                        case 'R':
+                            Map[pos].PieceOnTop = new Rook(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'r':
+                            Map[pos].PieceOnTop = new Rook(new Vector2(x * 64, y * 64), false);
+                            break;
+                        case 'B':
+                            Map[pos].PieceOnTop = new Bishop(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'b':
+                            Map[pos].PieceOnTop = new Bishop(new Vector2(x * 64, y * 64), false);
+                            break;
+                        case 'Q':
+                            Map[pos].PieceOnTop = new Queen(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'q':
+                            Map[pos].PieceOnTop = new Queen(new Vector2(x * 64, y * 64), false);
+                            break;
+                        case 'N':
+                            Map[pos].PieceOnTop = new Knight(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'n':
+                            Map[pos].PieceOnTop = new Knight(new Vector2(x * 64, y * 64), false);
+                            break;
+                        case 'K':
+                            Map[pos].PieceOnTop = new King(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'k':
+                            Map[pos].PieceOnTop = new King(new Vector2(x * 64, y * 64), false);
+                            break;
+                        case 'P':
+                            Map[pos].PieceOnTop = new Pawn(new Vector2(x * 64, y * 64), true);
+                            break;
+                        case 'p':
+                            Map[pos].PieceOnTop = new Pawn(new Vector2(x * 64, y * 64), false);
+                            break;
+                    }
                     x = x + 1;
+                    pos++;
                 }
-
+                
+                
             }
-
-
-            
-
 
         }
 
@@ -99,153 +148,171 @@ namespace chess
 
         public override void MouseDown(MouseEventArgs e)
         {
-            
-
             int mousePressX = e.X;
             int mousePressY = e.Y;
 
             MousePressedTile = new Vector2((mousePressX - mousePressX % 64) / 64,
         (mousePressY - mousePressY % 64) / 64);
 
-            if(Map[(int)MousePressedTile.x, (int)MousePressedTile.y].hasPiece())
-            {
-                new LegalMove(Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceOnTop,
-                    Map, Move);
-            }
+            //drawPossibleMoves();
 
             Console.WriteLine();
             Console.WriteLine("Click: " + MousePressedTile.ToString());
         }
 
+
+        private bool isWaitingForSecondClick = false;
+        private bool currentMove = true;
         public override void MouseUp(MouseEventArgs e)
         {
-            bool wasCklicked = false;
+            //bool wasPressed = false;
             int mouseReleaseX = e.Location.X;
             int mouseReleaseY = e.Location.Y;
 
             MouseReleasedTile = new Vector2((mouseReleaseX - mouseReleaseX % 64) / 64,
         (mouseReleaseY - mouseReleaseY % 64) / 64);
-            Console.WriteLine("Release: " + MouseReleasedTile.ToString());
+
+            int posP = (MousePressedTile.x + MousePressedTile.y * 8) ;
+            int posR = (MouseReleasedTile.x + MouseReleasedTile.y * 8);
 
 
-            if (previousSelectedTile != null)
+            Console.WriteLine(posP);
+            //Console.WriteLine(Map[posP].PieceSide());
+            if (posP == posR)
             {
-                wasCklicked = true;
-                Console.WriteLine("Previous: " + previousSelectedTile.ToString());
-                //Map[(int)MousePressedTile.x, (int)MousePressedTile.y].color = RED;
-                if (!Map[(int)MousePressedTile.x, (int)MousePressedTile.y].hasPiece())
+                if (Map[posP].hasPiece() && !isWaitingForSecondClick)
                 {
-                    Map[(int)MousePressedTile.x, (int)MousePressedTile.y].setPiece(
-                        Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].PieceOnTop);
-                    Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceOnTop.firstmove = false;
-
-                    Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].removePiece();
-                    Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].restoreColor();
-
-                    Map[(int)MousePressedTile.x, (int)MousePressedTile.y].restoreColor();
-                    Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].restoreColor();
-
-                    Console.WriteLine("ColorRestored");
-
-                    previousSelectedTile = null;
-                }
-                else if (Map[(int)MousePressedTile.x, (int)MousePressedTile.y].hasPiece())
-                {
-                    if (Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceSide() !=
-                        Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].PieceSide())
+                    if(Map[posP].PieceSide() == currentMove)
                     {
-                        Map[(int)MousePressedTile.x, (int)MousePressedTile.y].eatPiece();
-                        Map[(int)MousePressedTile.x, (int)MousePressedTile.y].setPiece(
-                            Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].PieceOnTop);
+                        isWaitingForSecondClick = true;
 
-                        Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceOnTop.firstmove = false;
+                        Map[posP].color = RED;
+                        previousSelectedPos = posP;
 
-                        Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].removePiece();
-                        Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].restoreColor();
+                        ClearPossibleMoves();
+                        Map[posP].PieceOnTop.CalculatePossibleMoves();
+                        
+                    }
+                }
+                else if(Map[posP].hasPiece() && isWaitingForSecondClick)
+                {
+                    if(Map[posP].PieceOnTop.getSide() == Map[previousSelectedPos].PieceOnTop.getSide())
+                    {
+                        Map[previousSelectedPos].restoreColor();
+                        Map[posP].color = RED;
+                        previousSelectedPos = posP;
 
-                        previousSelectedTile = null;
+                        ClearPossibleMoves();
+                        Map[posP].PieceOnTop.CalculatePossibleMoves();
                     }
                     else
                     {
-                        Map[(int)previousSelectedTile.x, (int)previousSelectedTile.y].restoreColor();
-                        previousSelectedTile = MousePressedTile;
-                        Map[(int)MousePressedTile.x, (int)MousePressedTile.y].color = RED;
-                    }
-                }
+                        Map[previousSelectedPos].restoreColor();
+                        Map[previousSelectedPos].Eat(Map[posP]);
 
-                //previousSelectedTile = null;
-            }
-            
-            if(!MouseReleasedTile.Equals(MousePressedTile))
-            {
-                previousSelectedTile = null;
-                if (!Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].hasPiece())
+                        OnMove(posP);
+                    }  
+                }
+                else if (isWaitingForSecondClick)
                 {
-                    Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].setPiece(
-                            Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceOnTop);
+                    Map[previousSelectedPos].restoreColor();
 
-                    Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].PieceOnTop.firstmove = false;
+                    Map[previousSelectedPos].Eat(Map[posP]);
 
-                    Map[(int)MousePressedTile.x, (int)MousePressedTile.y].removePiece();
+                    OnMove(posP);
                 }
-                else if (Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].hasPiece())
-                {
-                    if (Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].PieceSide() !=
-                        Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceSide())
-                    {
-
-                        Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].eatPiece();
-                        Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].setPiece(
-                            Map[(int)MousePressedTile.x, (int)MousePressedTile.y].PieceOnTop);
-
-                        Map[(int)MouseReleasedTile.x, (int)MouseReleasedTile.y].PieceOnTop.firstmove = false;
-
-                        Map[(int)MousePressedTile.x, (int)MousePressedTile.y].removePiece();
-
-                    }
-                    else
-                    {
-
-                    }
-                    
-
-                }
-                ClearPossibleMoves();
-                Map[(int)MousePressedTile.x, (int)MousePressedTile.y].restoreColor();
             }
 
-            if (MouseReleasedTile.Equals(MousePressedTile) && 
-                Map[(int)MousePressedTile.x, (int)MousePressedTile.y].hasPiece() && 
-                wasCklicked == false && 
-                previousSelectedTile == null)
-            {
-                previousSelectedTile = MousePressedTile;
-                Map[(int)MousePressedTile.x, (int)MousePressedTile.y].color = RED;
-                Console.WriteLine(previousSelectedTile.ToString());
-            }
-
-            if(wasCklicked)
-                ClearPossibleMoves();
             drawBoard();
         }
 
+        public void OnMove(int pos)
+        {
+            currentMove = !currentMove;
+            ClearPossibleMoves();
+            previousSelectedPos = -1;
+            isWaitingForSecondClick = false;
+
+
+            if (enpassantTarget > 0 && Map[enpassantTarget].hasPiece())
+            {
+                Pawn pawn  = Map[enpassantTarget].PieceOnTop as Pawn;
+                pawn.EnPassantTarget = false;
+                enpassantTarget = -1;
+            }
+
+            else if (enpassantTarget > 0)
+            {
+                enpassantTarget = -1;
+            }
+
+            if (Map[pos].PieceOnTop.IsType('p') && Map[pos].PieceOnTop.moves == 1)
+            {
+                Pawn pawn = Map[pos].PieceOnTop as Pawn;
+                enpassantTarget = pos;
+                pawn.EnPassantTarget = true;
+            }
+            ClearAttacked();
+            CalculateAttackedSquares();
+
+        }
+
+        public void CalculateAttackedSquares()
+        {
+            foreach(AbstractPiece piece in WhitePieces)
+            {
+                piece.CalculateAttackSquares(AttackedByWhite);
+            }
+            drawAttackedByWhite();
+        }
         public void ClearPossibleMoves()
         {
             PossibleMove.DestroyALL();
+            for (int i = 0; i < 64; i++)
+                if (Move[i] != null)
+                    Move[i] = null;
+                
         }
 
         public void drawBoard()
         {
-            for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                {
-                    if (j == 0) Console.Write("\n");
-                    if (Map[j, i].PieceOnTop != null)
-                        Console.Write(Map[j, i].PieceOnTop.tag);
-                    else Console.Write('`');
-                    
-                }
-
+            Console.WriteLine();
+            for (int i = 1; i <= 64; i++)
+            {
+                if (Map[i-1].PieceOnTop != null)
+                    Console.Write(Map[i-1].PieceOnTop.tag);
+                else Console.Write('`');
+                if((i) % 8 == 0)
+                    Console.Write("\n");
+            }
+            Console.WriteLine();
         }
+
+        public void drawAttackedByWhite()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Attacked By White");
+            for (int i = 1; i <= 64; i++)
+            {
+                if (AttackedByWhite[i-1] != false)
+                    Console.Write("#");
+                else Console.Write('`');
+
+                if ((i) % 8 == 0)
+                    Console.Write("\n");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+        }
+
+        public void ClearAttacked()
+        {
+            for (int i = 0; i < 64; i++)
+            {
+                if (AttackedByWhite[i] != false)
+                    AttackedByWhite[i] = false;
+            }
+        }
+        
     }
 }

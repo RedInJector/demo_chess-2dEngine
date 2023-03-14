@@ -8,17 +8,18 @@ using System.Threading.Tasks;
 
 namespace chess.Mark1Engine
 {
-    public class Piece
+    public class Piece1
     {
         public Vector2 Position = null;
         public Vector2 Scale = null;
         public char tag;
         public static Image SpriteSheetimage = Image.FromFile("Sprites/Pack1.png");
         public Image image;
-        public int side = 0;
+        public bool side = false;
+        public int moves = 0;
         public bool firstmove = true;
         Bitmap bitmap = new Bitmap(SpriteSheetimage);
-
+        public bool EnPassantTarget = false;
 
         Rectangle WK = new Rectangle(0, 0, 128, 128);
         Rectangle WQ = new Rectangle(128, 0, 128, 128);
@@ -34,16 +35,14 @@ namespace chess.Mark1Engine
         Rectangle BR = new Rectangle(512, 128, 128, 128);
         Rectangle BP = new Rectangle(640, 128, 128, 128);
 
-        public Piece() { }
-        public Piece(Vector2 position, Vector2 scale, char c)
+        public Piece1() { }
+        public Piece1(Vector2 position, Vector2 scale, char c)
         {
             this.Position = position;
             this.Scale = scale;
             this.tag = c;
             
-            image = new Bitmap((int)scale.x, (int)scale.y);
-
-            
+            image = new Bitmap(scale.x, scale.y);
 
             Rectangle spriteBounds = WP;
 
@@ -51,12 +50,12 @@ namespace chess.Mark1Engine
             switch (c)
             {
 
-                case 'P': spriteBounds = WP; side = 1; break;
-                case 'N': spriteBounds = WN; side = 1; break;
-                case 'B': spriteBounds = WB; side = 1; break;
-                case 'Q': spriteBounds = WQ; side = 1; break;
-                case 'K': spriteBounds = WK; side = 1; break;
-                case 'R': spriteBounds = WR; side = 1; break;
+                case 'P': spriteBounds = WP; side = true; break;
+                case 'N': spriteBounds = WN; side = true; break;
+                case 'B': spriteBounds = WB; side = true; break;
+                case 'Q': spriteBounds = WQ; side = true; break;
+                case 'K': spriteBounds = WK; side = true; break;
+                case 'R': spriteBounds = WR; side = true; break;
                 case 'p': spriteBounds = BP; break;
                 case 'n': spriteBounds = BN; break;
                 case 'b': spriteBounds = BB; break;
@@ -66,12 +65,31 @@ namespace chess.Mark1Engine
             }
 
 
-                    using (Graphics graphics = Graphics.FromImage(image))
+            using (Graphics graphics = Graphics.FromImage(image))
             {
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.DrawImage(bitmap, new Rectangle(0, 0, (int)scale.x, (int)scale.x), spriteBounds, GraphicsUnit.Pixel);
+                graphics.DrawImage(bitmap, new Rectangle(0, 0, scale.x, scale.x), spriteBounds, GraphicsUnit.Pixel);
             }
             Engine.RegisterSprite(this);
+        }
+
+        public bool IsType(Char c)
+        {
+            if (this.tag.ToString().ToLower() == "q" && c.ToString().ToLower() == "b")
+                return true;
+            if (this.tag.ToString().ToLower() == "q" && c.ToString().ToLower() == "r")
+                return true;
+
+            if (this.tag.ToString().ToLower() == c.ToString().ToLower())
+                return true;
+
+            return false;
+        }
+
+        public int GetMapPosition()
+        {
+
+            return ((this.Position.x / 64) + (this.Position.y / 64) * 8); ;
         }
 
         public void DestroySelf()
