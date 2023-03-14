@@ -32,6 +32,8 @@ namespace chess.Mark1Engine.BasicPieces
                 graphics.DrawImage(bitmap, new Rectangle(0, 0, this.Scale.x, this.Scale.x), R, GraphicsUnit.Pixel);
             }
 
+            Console.WriteLine("Queen: " + this.tag + "     " + this.IsType('p'));
+
             RegisterPiece();
         }
 

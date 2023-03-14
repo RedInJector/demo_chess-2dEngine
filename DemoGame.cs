@@ -250,7 +250,7 @@ namespace chess
             isWaitingForSecondClick = false;
 
 
-            if (enpassantTarget > 0 && Map[enpassantTarget].hasPiece())
+            if (enpassantTarget > 0 && Map[enpassantTarget].hasPiece() && Map[enpassantTarget].PieceOnTop.IsType('p'))
             {
                 Pawn pawn  = Map[enpassantTarget].PieceOnTop as Pawn;
                 pawn.EnPassantTarget = false;

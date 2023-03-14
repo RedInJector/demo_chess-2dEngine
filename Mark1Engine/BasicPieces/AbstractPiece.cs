@@ -60,10 +60,10 @@ namespace chess.Mark1Engine.BasicPieces
         }
         public bool IsType(Char c)
         {
-            if (this.tag.ToString().ToLower() == "q" && c.ToString().ToLower() == "b")
+           /* if (this.tag.ToString().ToLower() == "q" && c.ToString().ToLower() == "b")
                 return true;
             if (this.tag.ToString().ToLower() == "q" && c.ToString().ToLower() == "r")
-                return true;
+                return true;*/
 
             if (this.tag.ToString().ToLower() == c.ToString().ToLower())
                 return true;

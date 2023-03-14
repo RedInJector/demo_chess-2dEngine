@@ -111,7 +111,7 @@ namespace chess.Mark1Engine
                     OnDraw();
                     Window.BeginInvoke((MethodInvoker)delegate { Window.Refresh(); });
                     OnUpdate();
-                    Thread.Sleep(1);
+                    Thread.Sleep(50);
                 }catch {
                     Console.WriteLine("Loading...");
                 }
@@ -137,7 +137,6 @@ namespace chess.Mark1Engine
             {
                 g.DrawImage(piece.sprite, piece.Position.x, piece.Position.y);
             }
-
 
         }
 
