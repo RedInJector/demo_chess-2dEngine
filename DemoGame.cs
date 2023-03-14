@@ -212,7 +212,7 @@ namespace chess
                         
                     }
                 }
-                else if(Map[posP].hasPiece() && isWaitingForSecondClick && Move[posP] != null)
+                else if(Map[posP].hasPiece() && isWaitingForSecondClick)
                 {
                     if(Map[posP].PieceOnTop.getSide() == Map[previousSelectedPos].PieceOnTop.getSide())
                     {
@@ -223,7 +223,7 @@ namespace chess
                         ClearPossibleMoves();
                         Map[posP].PieceOnTop.CalculatePossibleMoves();
                     }
-                    else
+                    else if (Move[posP] != null)
                     {
                         Map[previousSelectedPos].restoreColor();
                         Map[previousSelectedPos].Eat(Map[posP]);
