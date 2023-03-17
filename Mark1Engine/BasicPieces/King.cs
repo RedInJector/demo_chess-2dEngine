@@ -35,9 +35,12 @@ namespace chess.Mark1Engine.BasicPieces
             RegisterPiece();
         }
 
-        public override void CalculateAttackSquares(bool[] a)
+        public override void CalculateAttackSquares()
         {
+            AttackedSquares.Clear();
             int startingPosition = ((Position.x / 64) + (Position.y / 64) * 8);
+            int startDirIndex = 0;
+            int EndDirIndex = 8;
 
             for (int i = 0; i < 8; i++)
             {
@@ -45,25 +48,27 @@ namespace chess.Mark1Engine.BasicPieces
                 if (targetPosition < 0 || targetPosition > 63)
                     continue;
 
-                a[targetPosition] = true;
+                if (PrecomputedData.DistanceToTheEdge[startingPosition][i] > 0)
+                    AttackedSquares.Add(targetPosition);
             }
         }
 
-        public override void CalculatePossibleMoves()
+        public override void ShowPossibleMoves()
         {
-            int startingPosition = ((Position.x / 64) + (Position.y / 64) * 8);
-
-            for (int i = 0; i < 8; i++)
+            foreach (int square in AttackedSquares)
             {
-                int targetPosition = startingPosition + PrecomputedData.DirectionOffset[i];
-                if (targetPosition < 0 || targetPosition > 63)
+                if (DemoGame.Map[square].hasPiece() && DemoGame.Map[square].PieceSide() == this.side)
                     continue;
 
-                if (DemoGame.Map[targetPosition].hasPiece() && DemoGame.Map[targetPosition].PieceOnTop.side == side)
+                if (this.side == true && DemoGame.AttackedByBlack[square])
                     continue;
 
-                Vector2 pos = DemoGame.Map[targetPosition].Position;
-                DemoGame.Move[targetPosition] = new PossibleMove(pos, BLUE);
+                else if (this.side == false && DemoGame.AttackedByWhite[square])
+                    continue;
+
+                Vector2 pos = DemoGame.Map[square].Position;
+                DemoGame.Move[square] = new PossibleMove(pos, BLUE);
+
             }
         }
 

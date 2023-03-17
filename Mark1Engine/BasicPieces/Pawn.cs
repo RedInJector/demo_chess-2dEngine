@@ -37,7 +37,7 @@ namespace chess.Mark1Engine.BasicPieces
             RegisterPiece();
         }
 
-        public override void CalculateAttackSquares(bool[] a)
+        public override void CalculateAttackSquares()
         {
             int startingPosition = ((Position.x / 64) + (Position.y / 64) * 8);
             int index = 8;
@@ -51,17 +51,17 @@ namespace chess.Mark1Engine.BasicPieces
                 return;
 
             int index2 = 1;
-            if (DemoGame.Map[targetSquare].Position.x / 64 >= 0)
-                    a[targetSquare + index2] = true;
+            if (DemoGame.Map[targetSquare].Position.x / 64 <= 6)
+                AttackedSquares.Add(targetSquare + index2);
  
 
             index2 = -1;
-            if (DemoGame.Map[targetSquare].Position.x / 64 <= 7)
-                    a[targetSquare + index2] = true;
+            if (DemoGame.Map[targetSquare].Position.x / 64 >= 1)
+                AttackedSquares.Add(targetSquare + index2);
 
         }
-
-        public override void CalculatePossibleMoves()
+        
+        public override void ShowPossibleMoves()
         {
             int startingPosition = ((Position.x / 64) + (Position.y / 64) * 8);
 
@@ -87,16 +87,18 @@ namespace chess.Mark1Engine.BasicPieces
                 DemoGame.Move[targetSquare + index] = new PossibleMove(pos, BLUE);
             }
 
-            // 2 ifs' for enPassant calculation
+            
             int index2 = 1;
-            if (DemoGame.Map[targetSquare].Position.x / 64 >= 0)
+            if (DemoGame.Map[targetSquare].Position.x / 64 >= 0 && DemoGame.Map[targetSquare + index2].Position.x / 64 >= 0)
             {
                 if (DemoGame.Map[targetSquare + index2].hasPiece() && DemoGame.Map[targetSquare + index2].PieceOnTop.side != side)
                 {
                     Vector2 pos = DemoGame.Map[targetSquare + index2].Position;
                     DemoGame.Move[targetSquare + index2] = new PossibleMove(pos, BLUE);
                 }
-                if (DemoGame.Map[startingPosition + index2].hasPiece() &&
+                //enPassant calculation
+                if (startingPosition + index2 < 64 && startingPosition + index2 >= 0 &&
+                   DemoGame.Map[startingPosition + index2].hasPiece() &&
                    DemoGame.Map[startingPosition + index2].PieceOnTop.IsType('p') &&
                    DemoGame.Map[startingPosition + index2].PieceOnTop.moves == 1)
                 {
@@ -109,14 +111,16 @@ namespace chess.Mark1Engine.BasicPieces
                 }
             }
             index2 = -1;
-            if (DemoGame.Map[targetSquare].Position.x / 64 <= 7)
+            if (DemoGame.Map[targetSquare].Position.x / 64 <= 7 && DemoGame.Map[targetSquare + index2].Position.x / 64 <= 7)
             {
                 if (DemoGame.Map[targetSquare + index2].hasPiece() && DemoGame.Map[targetSquare + index2].PieceOnTop.side != side)
                 {
                     Vector2 pos = DemoGame.Map[targetSquare + index2].Position;
                     DemoGame.Move[targetSquare + index2] = new PossibleMove(pos, BLUE);
                 }
-                if (DemoGame.Map[startingPosition + index2].hasPiece() &&
+                //enPassant calculation
+                if (startingPosition + index2 < 64 && startingPosition + index2 >= 0 &&
+                   DemoGame.Map[startingPosition + index2].hasPiece() &&
                    DemoGame.Map[startingPosition + index2].PieceOnTop.IsType('p') &&
                    DemoGame.Map[startingPosition + index2].PieceOnTop.moves == 1)
                 {
@@ -130,6 +134,8 @@ namespace chess.Mark1Engine.BasicPieces
             }
         }
 
+
+        
         public override void Move()
         {
             throw new NotImplementedException();
