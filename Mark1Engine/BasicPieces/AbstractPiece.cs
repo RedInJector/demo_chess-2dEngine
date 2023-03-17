@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Windows.Forms.AxHost;
@@ -17,6 +18,7 @@ namespace chess.Mark1Engine.BasicPieces
         public int moves { get; set; }
         public Bitmap bitmap { get; private set; }
         public char tag { get; set; }
+        public List<int> AttackedSquares = new List<int>();
         private static Image SpriteSheetimage { get; set; }
         public readonly Rectangle WK = new Rectangle(0, 0, 128, 128);
         public readonly Rectangle WQ = new Rectangle(128, 0, 128, 128);
@@ -51,8 +53,19 @@ namespace chess.Mark1Engine.BasicPieces
 
 
         public abstract void Move();
-        public abstract void CalculatePossibleMoves();
-        public abstract void CalculateAttackSquares(bool[] a);
+        public abstract void CalculateAttackSquares();
+        public virtual void ShowPossibleMoves()
+        {
+            foreach(int square in AttackedSquares)
+            {
+                if (DemoGame.Map[square].hasPiece() && DemoGame.Map[square].PieceSide() == this.side)
+                    continue;
+
+                Vector2 pos = DemoGame.Map[square].Position;
+                DemoGame.Move[square] = new PossibleMove(pos, BLUE);
+                
+            }
+        }
 
         public int GetMapPosition()
         {

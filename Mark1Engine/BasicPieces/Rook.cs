@@ -37,7 +37,7 @@ namespace chess.Mark1Engine.BasicPieces
             RegisterPiece();
         }
 
-        public override void CalculateAttackSquares(bool[] a)
+        public override void CalculateAttackSquares()
         {
             int startDirIndex = 0;
             int EndDirIndex = 4;
@@ -49,36 +49,9 @@ namespace chess.Mark1Engine.BasicPieces
                 {
                     int targetSquare = startingPosition + PrecomputedData.DirectionOffset[directionIndex] * (n);
 
-                    
-                    a[targetSquare] = true;
+                    AttackedSquares.Add(targetSquare);
 
-                    if (DemoGame.Map[targetSquare].hasPiece() && DemoGame.Map[targetSquare].PieceSide() == this.side)
-                        break;
-
-                    if (DemoGame.Map[targetSquare].hasPiece() && DemoGame.Map[targetSquare].PieceSide() != this.side)
-                        break;
-                }
-        }
-
-        public override void CalculatePossibleMoves()
-        {
-            int startDirIndex = 0;
-            int EndDirIndex = 4;
-
-            int startingPosition = ((this.Position.x / 64) + (this.Position.y / 64) * 8);
-
-            for (int directionIndex = startDirIndex; directionIndex < EndDirIndex; directionIndex++)
-                for (int n = 1; n <= PrecomputedData.DistanceToTheEdge[startingPosition][directionIndex]; n++)
-                {
-                    int targetSquare = startingPosition + PrecomputedData.DirectionOffset[directionIndex] * (n);
-
-                    if (DemoGame.Map[targetSquare].hasPiece() && DemoGame.Map[targetSquare].PieceSide() == this.side)
-                        break;
-
-                    Vector2 pos = DemoGame.Map[targetSquare].Position;
-                    DemoGame.Move[targetSquare] = new PossibleMove(pos, BLUE);
-
-                    if (DemoGame.Map[targetSquare].hasPiece() && DemoGame.Map[targetSquare].PieceSide() != this.side)
+                    if (DemoGame.Map[targetSquare].hasPiece())
                         break;
                 }
         }

@@ -37,7 +37,7 @@ namespace chess.Mark1Engine.BasicPieces
             RegisterPiece();
         }
 
-        public override void CalculateAttackSquares(bool[] a)
+        public override void CalculateAttackSquares()
         {
             int startingPosition = ((Position.x / 64) + (Position.y / 64) * 8);
             int index = 8;
@@ -52,16 +52,16 @@ namespace chess.Mark1Engine.BasicPieces
 
             int index2 = 1;
             if (DemoGame.Map[targetSquare].Position.x / 64 <= 6)
-                    a[targetSquare + index2] = true;
+                AttackedSquares.Add(targetSquare + index2);
  
 
             index2 = -1;
             if (DemoGame.Map[targetSquare].Position.x / 64 >= 1)
-                    a[targetSquare + index2] = true;
+                AttackedSquares.Add(targetSquare + index2);
 
         }
-
-        public override void CalculatePossibleMoves()
+        
+        public override void ShowPossibleMoves()
         {
             int startingPosition = ((Position.x / 64) + (Position.y / 64) * 8);
 
@@ -134,6 +134,8 @@ namespace chess.Mark1Engine.BasicPieces
             }
         }
 
+
+        
         public override void Move()
         {
             throw new NotImplementedException();

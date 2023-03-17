@@ -68,7 +68,7 @@ namespace chess
             }
 
 
-            string position = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+            string position = "qk6/8/8/8/8/8/8/6QK";
             string numbers = "12345678";
             position.Reverse();
 
@@ -143,6 +143,12 @@ namespace chess
                 
             }
 
+            CalculateAttackedSquares();
+            currentMove = false;
+            CalculateAttackedSquares();
+            currentMove = true;
+
+
             PlayMusic();
         }
 
@@ -208,7 +214,7 @@ namespace chess
                         previousSelectedPos = posP;
 
                         ClearPossibleMoves();
-                        Map[posP].PieceOnTop.CalculatePossibleMoves();
+                        Map[posP].PieceOnTop.ShowPossibleMoves();
                         
                     }
                 }
@@ -221,7 +227,7 @@ namespace chess
                         previousSelectedPos = posP;
 
                         ClearPossibleMoves();
-                        Map[posP].PieceOnTop.CalculatePossibleMoves();
+                        Map[posP].PieceOnTop.ShowPossibleMoves();
                     }
                     else if (Move[posP] != null)
                     {
@@ -296,12 +302,21 @@ namespace chess
             if(currentMove == true)
                 foreach(AbstractPiece piece in WhitePieces)
                 {
-                    piece.CalculateAttackSquares(AttackedByWhite);
+                    piece.CalculateAttackSquares();
+                    foreach(int square in piece.AttackedSquares)
+                    {
+                        AttackedByWhite[square] = true;
+                    }
+                    
                 }
             else
                 foreach (AbstractPiece piece in BlackPieces)
                 {
-                    piece.CalculateAttackSquares(AttackedByBlack);
+                    piece.CalculateAttackSquares();
+                    foreach (int square in piece.AttackedSquares)
+                    {
+                        AttackedByBlack[square] = true;
+                    }
                 }
             drawAttacked();
         }

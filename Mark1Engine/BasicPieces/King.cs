@@ -35,9 +35,12 @@ namespace chess.Mark1Engine.BasicPieces
             RegisterPiece();
         }
 
-        public override void CalculateAttackSquares(bool[] a)
+        public override void CalculateAttackSquares()
         {
+            AttackedSquares.Clear();
             int startingPosition = ((Position.x / 64) + (Position.y / 64) * 8);
+            int startDirIndex = 0;
+            int EndDirIndex = 8;
 
             for (int i = 0; i < 8; i++)
             {
@@ -45,60 +48,28 @@ namespace chess.Mark1Engine.BasicPieces
                 if (targetPosition < 0 || targetPosition > 63)
                     continue;
 
-                a[targetPosition] = true;
+                if (PrecomputedData.DistanceToTheEdge[startingPosition][i] > 0)
+                    AttackedSquares.Add(targetPosition);
             }
         }
 
-        public override void CalculatePossibleMoves()
+        public override void ShowPossibleMoves()
         {
-            int startingPosition = ((Position.x / 64) + (Position.y / 64) * 8);
-
-            int startDirIndex = 0;
-            int EndDirIndex = 8;
-
-
-            for (int directionIndex = startDirIndex; directionIndex < EndDirIndex; directionIndex++)
+            foreach (int square in AttackedSquares)
             {
-                int targetSquare = startingPosition + PrecomputedData.DirectionOffset[directionIndex];
-
-                if (PrecomputedData.DistanceToTheEdge[startingPosition][directionIndex] == 0)
+                if (DemoGame.Map[square].hasPiece() && DemoGame.Map[square].PieceSide() == this.side)
                     continue;
 
-                if (DemoGame.Map[targetSquare].hasPiece() && DemoGame.Map[targetSquare].PieceOnTop.side == side)
+                if (this.side == true && DemoGame.AttackedByBlack[square])
                     continue;
 
-                Vector2 pos = DemoGame.Map[targetSquare].Position;
+                else if (this.side == false && DemoGame.AttackedByWhite[square])
+                    continue;
 
-                if (DemoGame.currentMove == true && DemoGame.AttackedByBlack[targetSquare] == false)
-                    DemoGame.Move[targetSquare] = new PossibleMove(pos, BLUE);
-
-                else if (DemoGame.currentMove == false && DemoGame.AttackedByWhite[targetSquare] == false)
-                    DemoGame.Move[targetSquare] = new PossibleMove(pos, BLUE);
+                Vector2 pos = DemoGame.Map[square].Position;
+                DemoGame.Move[square] = new PossibleMove(pos, BLUE);
 
             }
-
-
-
-
-
-
-           /* for (int i = 0; i < 8; i++)
-            {
-                int targetPosition = startingPosition + PrecomputedData.DirectionOffset[i];
-                if (targetPosition < 0 || targetPosition > 63)
-                    continue;
-
-                if (DemoGame.Map[targetPosition].hasPiece() && DemoGame.Map[targetPosition].PieceOnTop.side == side)
-                    continue;
-
-                Vector2 pos = DemoGame.Map[targetPosition].Position;
-
-                if (DemoGame.currentMove == true && DemoGame.AttackedByBlack[targetPosition] == false)
-                    DemoGame.Move[targetPosition] = new PossibleMove(pos, BLUE);
-
-                else if(DemoGame.currentMove == false && DemoGame.AttackedByWhite[targetPosition] == false)
-                    DemoGame.Move[targetPosition] = new PossibleMove(pos, BLUE);
-            }*/
         }
 
         public override void Move()
